@@ -11,6 +11,8 @@ class Node:
     h: int
     parent: Optional[str] = None
     label: str = ""
+    confidence: float = 1.0
+    relations: List[str] = field(default_factory=list)
 
 @dataclass
 class LayoutGraph:
@@ -19,4 +21,4 @@ class LayoutGraph:
     nodes: List[Node] = field(default_factory=list)
 
     def to_dict(self):
-        return {"width": self.width, "height": self.height, "nodes": [asdict(n) for n in self.nodes]}
+        return {"width":self.width,"height":self.height,"nodes":[asdict(n) for n in self.nodes]}
