@@ -21,6 +21,7 @@ vision = [
 [project.scripts]
 wireproto = "wireproto.cli:main"
 wireproto-e2e = "wireproto.e2e:main"
+wireproto-full-e2e = "wireproto.full_e2e:main"
 
 [tool.setuptools.packages.find]
 include = ["wireproto*"]
