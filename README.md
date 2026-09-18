@@ -37,3 +37,25 @@ See `docs/PIPELINE.md` for the architecture and extraction contract.
 ## Next
 
 Connect a real image generator, add vision/OCR adapters, infer rows/columns/repeated groups, add quality scoring, and persist prompt/image/graph triples as a synthetic training dataset for a future distilled Layout Transformer.
+
+
+## E2E benchmark
+
+Run the full reverse-engineering path directly from a screenshot:
+
+```bash
+pip install -e '.[vision]'
+python -m wireproto.e2e --image reference.png --output output/reference
+```
+
+Artifacts:
+
+- `detected.json` — raw vision detections
+- `layout.json` — inferred canonical LayoutGraph
+- `wireframe.svg` — reconstructed skeleton
+- `overlay.svg` — detections over the source screenshot
+- `report.json` — structural quality diagnostics
+
+For fast development without loading the vision model, cache detections and rerun with `--detections output/reference/detected.json`.
+
+The first benchmark target is the Flowly-style reference: feed the final UI screenshot and evaluate whether the reconstructed wireframe preserves its section hierarchy, columns, card groups, whitespace and major visual placeholders.
