@@ -1,29 +1,39 @@
 # wireproto
 
-Protótipo de geração de wireframes com abordagem **skeleton-first**.
+Reverse-engineering prototype for high-quality AI-generated wireframes.
 
-## Objetivo
-
-Gerar layouts estruturais antes da renderização visual.
+## Pipeline
 
 ```text
-prompt -> semantic layout plan -> layout generator -> constraints -> LayoutGraph JSON -> SVG renderer
+Prompt
+  -> Image model (teacher)
+  -> high-quality machine-readable wireframe image
+  -> Structure extractor (vision/detection/OCR)
+  -> [type, x, y, w, h, confidence]
+  -> Relationship inference
+  -> LayoutGraph
+  -> Constraint pass
+  -> JSON + SVG preview
+  -> dataset for later distillation
 ```
 
-A fonte da verdade é o `LayoutGraph` em JSON; SVG é apenas a visualização.
+The goal is to reuse the layout knowledge already present in image/video models instead of training a layout generator from zero. SVG is not the generator; it is only a deterministic preview of the recovered structure.
 
-## Rodar
+## Current MVP
+
+The model-specific extraction boundary is represented by a simple detection JSON contract. This lets us test extraction -> relationships -> constraints -> graph -> renderer immediately, then plug Florence-2 or another vision stack into the same contract.
 
 ```bash
-python -m wireproto.cli "dashboard financeiro com sidebar, cards, gráfico e tabela"
+python -m wireproto.cli --detections examples/detections.json
 ```
 
-Saídas: `output/layout.json` e `output/wireframe.svg`.
+Outputs:
 
-## Próximos passos
+- `output/layout.json`
+- `output/wireframe.svg`
 
-- gerador condicionado por LLM/Transformer
-- dataset de layouts com hierarquia e bounding boxes
-- Layout Transformer/Layout Diffusion
-- scoring de overlap, alinhamento, densidade e hierarquia
-- exportação HTML/Figma
+See `docs/PIPELINE.md` for the architecture and extraction contract.
+
+## Next
+
+Connect a real image generator, add vision/OCR adapters, infer rows/columns/repeated groups, add quality scoring, and persist prompt/image/graph triples as a synthetic training dataset for a future distilled Layout Transformer.
