@@ -59,3 +59,18 @@ Artifacts:
 For fast development without loading the vision model, cache detections and rerun with `--detections output/reference/detected.json`.
 
 The first benchmark target is the Flowly-style reference: feed the final UI screenshot and evaluate whether the reconstructed wireframe preserves its section hierarchy, columns, card groups, whitespace and major visual placeholders.
+
+
+## Full generation E2E: left then right
+
+The primary flow is now `prompt -> generated wireframe -> structure extraction -> LayoutGraph -> constrained control -> polished UI`.
+
+```bash
+wireproto-full-e2e "AI productivity landing page" \\
+  --wireframe-command "./my-wireframe-adapter" \\
+  --ui-command "./my-flux-controlnet-adapter"
+```
+
+Generator adapters receive `WIREPROTO_PROMPT` and `WIREPROTO_OUTPUT`. The UI adapter additionally receives `WIREPROTO_CONTROL_IMAGE`. This makes the pipeline provider-neutral while keeping the two stages explicit.
+
+Artifacts are numbered in order: `01-wireframe.png` (left target), `02-detected.json`, `03-layout.json`, `04-constrained-wireframe.svg`, and `05-final-ui.png` (right target).
