@@ -32,7 +32,7 @@ def quality_report(graph) -> dict:
         "nodes": len(nodes),
         "overlap_pairs": overlaps,
         "with_parent": sum(1 for n in nodes if n.parent),
-        "relations": sum(len(n.relations) for n in nodes),
+        "relations": len(graph.relations),
     }
 
 
