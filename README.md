@@ -8,20 +8,20 @@ Reverse-engineering prototype for high-quality AI-generated wireframes.
 Prompt
   -> Image model (teacher)
   -> high-quality machine-readable wireframe image
-  -> Structure extractor (vision/detection/OCR)
-  -> [type, x, y, w, h, confidence]
+  -> Vision/VLM structure parser
+  -> semantic nodes + bbox + text + hierarchy hints
   -> Relationship inference
-  -> LayoutGraph
-  -> Constraint pass
-  -> JSON + SVG preview
+  -> canonical UI Scene Graph
+  -> Deterministic constraint normalization
+  -> scene-graph JSON + SVG preview
   -> dataset for later distillation
 ```
 
-The goal is to reuse the layout knowledge already present in image/video models instead of training a layout generator from zero. SVG is not the generator; it is only a deterministic preview of the recovered structure.
+The goal is to reuse the layout knowledge already present in image/video models instead of training a layout generator from zero. The canonical representation is a semantic UI scene graph: nodes preserve bounding boxes, hierarchy, layout hints and constraints, while relationships such as alignment, containment and relative position live as first-class graph edges. SVG is not the generator; it is only a deterministic preview of that graph.
 
 ## Current MVP
 
-The model-specific extraction boundary is represented by a simple detection JSON contract. This lets us test extraction -> relationships -> constraints -> graph -> renderer immediately, then plug Florence-2 or another vision stack into the same contract.
+The model-specific extraction boundary is provider-neutral JSON. A detector can provide only type + bbox, while a stronger VLM can additionally provide text, parent/children, layout hints, constraints and visual role. The pipeline never converts the structure to ASCII: geometry and semantics remain machine-readable end to end.
 
 ```bash
 python -m wireproto.cli --detections examples/detections.json
