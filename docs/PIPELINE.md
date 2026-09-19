@@ -58,3 +58,24 @@ When generating a synthetic wireframe teacher image, prefer a rigid visual langu
 ## Next milestone
 
 Add a semantic VLM adapter that emits the richer contract directly, then add row/column/repeated-group inference and structural quality scoring. Florence-2 remains useful as a lightweight detector fallback, not as the canonical representation.
+
+
+## Evolution path: GUI-specialized vision
+
+This is a future evolution, not a replacement for the current pipeline.
+
+The current extraction contract and Florence-2 adapter remain unchanged as the working baseline. A later milestone can add a provider-neutral `VisionAdapter` interface and an optional UI-TARS adapter specialized for GUI grounding. Its output should be translated into the same canonical scene-graph contract already consumed by Wireproto.
+
+```text
+CURRENT
+screenshot -> Florence-2/detections -> extractor -> scene graph -> constraints -> preview
+
+EVOLUTION
+screenshot -> optional GUI-specialized adapter (e.g. UI-TARS)
+           -> same extraction contract
+           -> same scene graph
+           -> same constraints
+           -> same renderers
+```
+
+The purpose of this evolution is to improve semantic GUI understanding and grounding without coupling the core pipeline to one model or invalidating the existing detector path. Florence-2 remains a supported baseline/fallback; UI-TARS or future GUI VLMs are additional adapters behind the same boundary.
